@@ -1,7 +1,7 @@
-
 import { GoogleGenAI, Chat, Content, Type } from "@google/genai";
 import { TrendingNewsItem } from "../types";
 
+// ✅ SỬA: Đổi từ API_KEY thành GEMINI_API_KEY
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
 export const createChatSession = (history?: Content[]): Chat => {
