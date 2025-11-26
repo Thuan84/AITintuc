@@ -1,0 +1,5 @@
+{
+  "name": "AI_Tổng hợp tin tức hàng ngày",
+  "description": "A conversational news assistant powered by Gemini 2.5 Flash and Google Search Grounding, providing real-time answers from reputable Vietnamese sources.",
+  "requestFramePermissions": []
+}
