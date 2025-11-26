@@ -1,14 +1,13 @@
+
 import { GoogleGenAI, Chat, Content, Type } from "@google/genai";
 import { TrendingNewsItem } from "../types";
 
-const ai = new GoogleGenAI({
-  apiKey: process.env.GEMINI_API_KEY }); // ✅ ĐÃ ĐỔI TÊN BIẾN
-
+const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
 export const createChatSession = (history?: Content[]): Chat => {
   return ai.chats.create({
     model: "gemini-2.5-flash",
-    history,
+    history: history,
     config: {
       tools: [{ googleSearch: {} }],
       systemInstruction: `Bạn là VN News Bot - Trợ lý tin tức thông minh và đáng tin cậy.
@@ -40,8 +39,7 @@ export const getTrendingNews = async (): Promise<TrendingNewsItem[]> => {
   try {
     const response = await ai.models.generateContent({
       model: "gemini-2.5-flash",
-      contents:
-        "Tìm kiếm và tổng hợp 7 tin tức nóng hổi, quan trọng nhất đang diễn ra tại Việt Nam và thế giới trong 12 giờ qua. Đa dạng chủ đề (Thời sự, Thể thao, Công nghệ, Giải trí).",
+      contents: "Tìm kiếm và tổng hợp 7 tin tức nóng hổi, quan trọng nhất đang diễn ra tại Việt Nam và thế giới trong 12 giờ qua. Đa dạng chủ đề (Thời sự, Thể thao, Công nghệ, Giải trí).",
       config: {
         tools: [{ googleSearch: {} }],
         responseMimeType: "application/json",
@@ -50,37 +48,22 @@ export const getTrendingNews = async (): Promise<TrendingNewsItem[]> => {
           items: {
             type: Type.OBJECT,
             properties: {
-              title: {
-                type: Type.STRING,
-                description: "Tiêu đề ngắn gọn, giật tít của tin tức",
-              },
-              summary: {
-                type: Type.STRING,
-                description: "Tóm tắt nội dung chính trong 1-2 câu",
-              },
-              category: {
-                type: Type.STRING,
-                description: "Chuyên mục (VD: Thời sự, Thể thao...)",
-              },
-              source: {
-                type: Type.STRING,
-                description: "Tên báo/nguồn tin chính (VD: VnExpress)",
-              },
-              timeAgo: {
-                type: Type.STRING,
-                description: "Thời gian ước lượng (VD: 2 giờ trước)",
-              },
+              title: { type: Type.STRING, description: "Tiêu đề ngắn gọn, giật tít của tin tức" },
+              summary: { type: Type.STRING, description: "Tóm tắt nội dung chính trong 1-2 câu" },
+              category: { type: Type.STRING, description: "Chuyên mục (VD: Thời sự, Thể thao...)" },
+              source: { type: Type.STRING, description: "Tên báo/nguồn tin chính (VD: VnExpress)" },
+              timeAgo: { type: Type.STRING, description: "Thời gian ước lượng (VD: 2 giờ trước)" }
             },
-            required: ["title", "summary", "category", "source"],
-          },
-        },
-      },
+            required: ["title", "summary", "category", "source"]
+          }
+        }
+      }
     });
 
-    const text = response.text(); // ✅ chuẩn cách lấy text
-    if (!text) return [];
-
-    return JSON.parse(text) as TrendingNewsItem[];
+    if (response.text) {
+      return JSON.parse(response.text) as TrendingNewsItem[];
+    }
+    return [];
   } catch (error) {
     console.error("Error fetching trending news:", error);
     throw error;
