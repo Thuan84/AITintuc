@@ -2,8 +2,8 @@ import { GoogleGenAI, Chat, Content, Type } from "@google/genai";
 import { TrendingNewsItem } from "../types";
 
 const ai = new GoogleGenAI({
-  apiKey: process.env.GEMINI_API_KEY as string, // ✅ ĐÃ ĐỔI TÊN BIẾN
-});
+  apiKey: process.env.GEMINI_API_KEY }); // ✅ ĐÃ ĐỔI TÊN BIẾN
+
 
 export const createChatSession = (history?: Content[]): Chat => {
   return ai.chats.create({
